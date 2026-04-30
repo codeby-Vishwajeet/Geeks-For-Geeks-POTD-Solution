@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    vector<int> commonElements(vector<int> &a, vector<int> &b, vector<int> &c) {
+        vector<int> res;
+        int i = 0, j = 0, k = 0;
+        int n1 = a.size(), n2 = b.size(), n3 = c.size();
+        
+        while (i < n1 && j < n2 && k < n3) {
+            // Check if the element is common in all three arrays
+            if (a[i] == b[j] && b[j] == c[k]) {
+                // Check to prevent pushing duplicate elements into the result
+                if (res.empty() || res.back() != a[i]) {
+                    res.push_back(a[i]);
+                }
+                i++;
+                j++;
+                k++;
+            } 
+            // If x < y, move the pointer for array 'a'
+            else if (a[i] < b[j]) {
+                i++;
+            } 
+            // If y < z, move the pointer for array 'b'
+            else if (b[j] < c[k]) {
+                j++;
+            } 
+            // Otherwise, move the pointer for array 'c' (z is the smallest)
+            else {
+                k++;
+            }
+        }
+        return res;
+    }
+};
