@@ -1,0 +1,23 @@
+class Solution {
+public:
+    bool isMaxHeap(vector<int>& arr) {
+        int n = arr.size();
+        
+        // We only need to check up to the last non-leaf node.
+        // A node at index 'i' has children at '2*i + 1' and '2*i + 2'
+        for (int i = 0; i <= (n - 2) / 2; ++i) {
+            
+            // If the left child exists and is greater than the parent, it's not a max heap
+            if (2 * i + 1 < n && arr[2 * i + 1] > arr[i]) {
+                return false;
+            }
+            
+            // If the right child exists and is greater than the parent, it's not a max heap
+            if (2 * i + 2 < n && arr[2 * i + 2] > arr[i]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
