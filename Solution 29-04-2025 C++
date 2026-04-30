@@ -1,0 +1,52 @@
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+  public:
+    int minSwaps(vector<int>& arr) {
+        int n = arr.size();
+        int total_ones = 0;
+        
+        // Step 1: Count total number of 1s in the array
+        for (int num : arr) {
+            if (num == 1) {
+                total_ones++;
+            }
+        }
+        
+        // Step 2: If no 1s are present, return -1
+        if (total_ones == 0) {
+            return -1;
+        }
+        
+        // Step 3: Find 1s in the first window of size 'total_ones'
+        int current_ones_in_window = 0;
+        for (int i = 0; i < total_ones; i++) {
+            if (arr[i] == 1) {
+                current_ones_in_window++;
+            }
+        }
+        
+        int max_ones_in_window = current_ones_in_window;
+        
+        // Step 4: Slide the window across the rest of the array
+        for (int i = total_ones; i < n; i++) {
+            // Add the element that enters the window
+            if (arr[i] == 1) {
+                current_ones_in_window++;
+            }
+            // Remove the element that exits the window
+            if (arr[i - total_ones] == 1) {
+                current_ones_in_window--;
+            }
+            
+            // Update the maximum number of 1s found in a single window
+            max_ones_in_window = max(max_ones_in_window, current_ones_in_window);
+        }
+        
+        // Step 5: The answer is the number of 0s in the best window
+        return total_ones - max_ones_in_window;
+    }
+};
