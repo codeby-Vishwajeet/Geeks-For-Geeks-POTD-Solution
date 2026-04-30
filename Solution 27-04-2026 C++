@@ -1,0 +1,35 @@
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+  public:
+    int smallestSubstring(string s) {
+        // Variables to store the last seen indices of '0', '1', and '2'
+        int lastZero = -1, lastOne = -1, lastTwo = -1;
+        
+        // Initialize minimum length with a very large value
+        int minLen = 1e9; 
+        
+        for (int i = 0; i < s.length(); i++) {
+            // Update the most recent index for the current character
+            if (s[i] == '0') lastZero = i;
+            else if (s[i] == '1') lastOne = i;
+            else if (s[i] == '2') lastTwo = i;
+            
+            // If we have seen all three characters at least once
+            if (lastZero != -1 && lastOne != -1 && lastTwo != -1) {
+                // The start of our current valid window is the oldest index 
+                // out of the three recent character occurrences.
+                int start = min({lastZero, lastOne, lastTwo});
+                
+                // Calculate window length and update minimum length
+                minLen = min(minLen, i - start + 1);
+            }
+        }
+        
+        // If minLen wasn't updated, return -1. Otherwise, return minLen.
+        return minLen == 1e9 ? -1 : minLen;
+    }
+};
