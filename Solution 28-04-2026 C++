@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    int longestSubstr(string& s, int k) {
+        int n = s.length();
+        int left = 0;
+        int max_len = 0;
+        int max_freq = 0;
+        vector<int> freq(26, 0); // To store frequencies of 'A' to 'Z'
+        
+        for (int right = 0; right < n; ++right) {
+            // Expand the window to the right and update the character frequency
+            freq[s[right] - 'A']++;
+            
+            // Keep track of the most frequent character in our current window
+            max_freq = max(max_freq, freq[s[right] - 'A']);
+            
+            // Is the window invalid? 
+            // Characters to replace = (window size) - (max_freq)
+            // If we need more than 'k' replacements, we must shrink the window
+            if ((right - left + 1) - max_freq > k) {
+                freq[s[left] - 'A']--;
+                left++; 
+            }
+            
+            // If we reach here, the window is valid (or just shifted), update max_len
+            max_len = max(max_len, right - left + 1);
+        }
+        
+        return max_len;
+    }
+};
