@@ -1,0 +1,21 @@
+class Solution {
+  public:
+    int findPosition(int n) {
+        // Step 1: Check if there is exactly ONE set bit.
+        // A number with exactly one set bit is a power of 2.
+        // n & (n - 1) will be 0 only if n is a power of 2.
+        // We also check n == 0 because 0 has no set bits.
+        if (n == 0 || (n & (n - 1)) != 0) {
+            return -1;
+        }
+        
+        // Step 2: Find the position of that single set bit.
+        int pos = 1;
+        while ((n & 1) == 0) { // While the least significant bit is 0
+            pos++;             // Increment the position counter
+            n >>= 1;           // Right shift 'n' by 1 bit
+        }
+        
+        return pos;
+    }
+};
