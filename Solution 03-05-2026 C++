@@ -1,0 +1,16 @@
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    std::vector<int> sortBySetBitCount(std::vector<int>& arr) {
+        // Use stable_sort to maintain relative order of elements with the same bit count
+        std::stable_sort(arr.begin(), arr.end(), [](int a, int b) {
+            // Compare the number of set bits in descending order
+            return __builtin_popcount(a) > __builtin_popcount(b);
+        });
+        
+        // Return the modified vector as requested by the GFG Driver
+        return arr; 
+    }
+};
