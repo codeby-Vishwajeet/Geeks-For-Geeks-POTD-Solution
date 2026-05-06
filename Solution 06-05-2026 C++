@@ -1,0 +1,26 @@
+/* Tree node structure  used in the program
+
+struct Node
+{
+    int data;
+    Node* left;
+    Node* right;
+}; */
+
+class Solution {
+  public:
+    // Function to return the size of the binary tree.
+    int getSize(Node* node) {
+        // Base case: If the node is null, it contributes 0 to the size.
+        if (node == NULL) {
+            return 0;
+        }
+        
+        // Recursively calculate the size of the left and right subtrees.
+        int leftSize = getSize(node->left);
+        int rightSize = getSize(node->right);
+        
+        // Total size = size of left subtree + size of right subtree + 1 (current node)
+        return leftSize + rightSize + 1;
+    }
+};
