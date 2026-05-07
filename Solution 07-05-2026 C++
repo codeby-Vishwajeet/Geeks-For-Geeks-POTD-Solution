@@ -1,0 +1,57 @@
+/* A binary tree node
+struct Node
+{
+    int data;
+    struct Node* left;
+    struct Node* right;
+
+    Node(int x){
+        data = x;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution
+{
+  public:
+    // Helper function to check if two trees are perfectly identical
+    bool isIdentical(Node* root1, Node* root2) {
+        // If both are empty, they are identical
+        if (root1 == NULL && root2 == NULL) {
+            return true;
+        }
+        
+        // If only one is empty, they are not identical
+        if (root1 == NULL || root2 == NULL) {
+            return false;
+        }
+        
+        // Check if current data matches, then recursively check left and right subtrees
+        return (root1->data == root2->data) && 
+               isIdentical(root1->left, root2->left) && 
+               isIdentical(root1->right, root2->right);
+    }
+    
+    // Main function to check if S is a subtree of tree T.
+    bool isSubTree(Node* T, Node* S) 
+    {
+        // An empty tree S is always a subtree
+        if (S == NULL) {
+            return true;
+        }
+        
+        // If T is empty but S is not, S cannot be a subtree
+        if (T == NULL) {
+            return false;
+        }
+        
+        // If the trees rooted at the current node are identical, we found it
+        if (isIdentical(T, S)) {
+            return true;
+        }
+        
+        // Otherwise, recursively search in the left and right subtrees of T
+        return isSubTree(T->left, S) || isSubTree(T->right, S);
+    }
+};
