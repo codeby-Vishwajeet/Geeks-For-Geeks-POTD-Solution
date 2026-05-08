@@ -1,57 +1,78 @@
-/* A binary tree node
-struct Node
-{
-    int data;
-    struct Node* left;
-    struct Node* right;
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_set>
+#include <queue>
 
-    Node(int x){
-        data = x;
-        left = right = NULL;
-    }
-};
-*/
+using namespace std;
 
-class Solution
-{
-  public:
-    // Helper function to check if two trees are perfectly identical
-    bool isIdentical(Node* root1, Node* root2) {
-        // If both are empty, they are identical
-        if (root1 == NULL && root2 == NULL) {
-            return true;
+class Solution {
+public:
+    // Helper function to check if a string has balanced parentheses
+    bool isValid(const string& s) {
+        int count = 0;
+        for (char c : s) {
+            if (c == '(') count++;
+            else if (c == ')') {
+                if (count == 0) return false; // More closing than opening
+                count--;
+            }
         }
-        
-        // If only one is empty, they are not identical
-        if (root1 == NULL || root2 == NULL) {
-            return false;
-        }
-        
-        // Check if current data matches, then recursively check left and right subtrees
-        return (root1->data == root2->data) && 
-               isIdentical(root1->left, root2->left) && 
-               isIdentical(root1->right, root2->right);
+        return count == 0; // Valid if all opening brackets are closed
     }
-    
-    // Main function to check if S is a subtree of tree T.
-    bool isSubTree(Node* T, Node* S) 
-    {
-        // An empty tree S is always a subtree
-        if (S == NULL) {
-            return true;
+
+    vector<string> validParenthesis(string s) {
+        vector<string> res;
+        if (s.empty()) return {""};
+
+        unordered_set<string> visited;
+        queue<string> q;
+
+        q.push(s);
+        visited.insert(s);
+
+        bool found = false;
+
+        // BFS Level-Order Traversal
+        while (!q.empty()) {
+            int size = q.size();
+            
+            for (int i = 0; i < size; i++) {
+                string curr = q.front();
+                q.pop();
+
+                // If valid, add it to our results and flag that we've found the minimum removals
+                if (isValid(curr)) {
+                    res.push_back(curr);
+                    found = true;
+                }
+
+                // If we've already found valid strings at this length level, 
+                // we don't need to generate shorter strings (children).
+                if (found) continue;
+
+                // Generate all possible strings by removing one parenthesis
+                for (int j = 0; j < curr.length(); j++) {
+                    // We only remove parentheses, not letters
+                    if (curr[j] != '(' && curr[j] != ')') continue;
+
+                    // Create new string without the character at index j
+                    string nextStr = curr.substr(0, j) + curr.substr(j + 1);
+                    
+                    // If we haven't seen this string before, add it to queue
+                    if (visited.find(nextStr) == visited.end()) {
+                        visited.insert(nextStr);
+                        q.push(nextStr);
+                    }
+                }
+            }
+            
+            // Stop completely once we've processed the level where the first valid strings were found
+            if (found) break;
         }
         
-        // If T is empty but S is not, S cannot be a subtree
-        if (T == NULL) {
-            return false;
-        }
-        
-        // If the trees rooted at the current node are identical, we found it
-        if (isIdentical(T, S)) {
-            return true;
-        }
-        
-        // Otherwise, recursively search in the left and right subtrees of T
-        return isSubTree(T->left, S) || isSubTree(T->right, S);
+        // IMPORTANT: We explicitly DO NOT sort the `res` vector here.
+        // Returning the raw BFS generation order ensures we match GfG's specific expectations.
+        return res;
     }
 };
