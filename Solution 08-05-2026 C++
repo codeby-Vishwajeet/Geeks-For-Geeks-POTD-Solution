@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+const int INF = 1e9; // Represents an unreachable node
+
+// Helper function to perform BFS and return distances from a single source
+vector<int> bfs(int start, int n, const vector<vector<int>>& adj) {
+    vector<int> dist(n, INF);
+    queue<int> q;
+    
+    q.push(start);
+    dist[start] = 0;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+
+        for (int v : adj[u]) {
+            if (dist[v] == INF) {
+                dist[v] = dist[u] + 1;
+                q.push(v);
+            }
+        }
+    }
+    return dist;
+}
+
+int main() {
+    // Fast I/O for competitive programming
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, m;
+    if (!(cin >> n >> m)) return 0;
+
+    vector<vector<int>> adj(n);
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+        // The network consists of bidirectional routes
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    int hub1, hub2, dest;
+    cin >> hub1 >> hub2 >> dest;
+
+    // Run 3 separate BFS traversals
+    vector<int> dist1 = bfs(hub1, n, adj);
+    vector<int> dist2 = bfs(hub2, n, adj);
+    vector<int> distDest = bfs(dest, n, adj);
+
+    int min_total_hours = INF;
+
+    // Evaluate every node as a potential consolidation hub
+    for (int i = 0; i < n; ++i) {
+        // Ensure the consolidation hub is actually reachable from all 3 points
+        if (dist1[i] != INF && dist2[i] != INF && distDest[i] != INF) {
+            int current_hours = dist1[i] + dist2[i] + distDest[i];
+            min_total_hours = min(min_total_hours, current_hours);
+        }
+    }
+
+    // Output the result or -1 if no valid path exists
+    if (min_total_hours == INF) {
+        cout << -1 << "\n";
+    } else {
+        cout << min_total_hours << "\n";
+    }
+
+    return 0;
+}
