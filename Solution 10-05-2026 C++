@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    int maxProfit(int x, int y, vector<int>& a, vector<int>& b) {
+        int n = a.size();
+        
+        // Pair to store {a[i] - b[i], original_index}
+        vector<pair<int, int>> diffs(n);
+        int ideal_k = 0;
+        
+        for (int i = 0; i < n; i++) {
+            diffs[i] = {a[i] - b[i], i};
+            // Count how many tasks give more profit on Machine A
+            if (a[i] > b[i]) {
+                ideal_k++;
+            }
+        }
+        
+        // Sort descending by the profit difference (highest preference for A first)
+        sort(diffs.rbegin(), diffs.rend());
+        
+        // Calculate the boundaries for how many tasks Machine A can legally take
+        int min_k = max(0, n - y);
+        int max_k = min(n, x);
+        
+        // Clamp the ideal number of A-tasks to strictly fit the boundaries
+        int k = ideal_k;
+        if (k > max_k) k = max_k;
+        if (k < min_k) k = min_k;
+        
+        long long total_profit = 0;
+        
+        // The first 'k' tasks go to Machine A
+        for (int i = 0; i < k; i++) {
+            total_profit += a[diffs[i].second];
+        }
+        
+        // The remaining tasks go to Machine B
+        for (int i = k; i < n; i++) {
+            total_profit += b[diffs[i].second];
+        }
+        
+        return total_profit;
+    }
+};
