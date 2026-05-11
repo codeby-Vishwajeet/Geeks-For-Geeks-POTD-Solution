@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+  private:
+    // Helper function to check if a string is a palindrome
+    bool isPalindrome(const string& s) {
+        if (s.empty()) return true;
+        int l = 0, r = s.length() - 1;
+        while (l < r) {
+            if (s[l++] != s[r--]) return false;
+        }
+        return true;
+    }
+
+  public:
+    // Exact signature expected by the GfG driver
+    bool palindromePair(vector<string>& arr) {
+        unordered_map<string, int> id;
+        int n = arr.size();
+
+        // Step 1: Store the last index of each string in a hash map
+        for (int i = 0; i < n; ++i) {
+            id[arr[i]] = i;
+        }
+
+        // Step 2: Traverse each string and check possible palindrome formations
+        for (int i = 0; i < n; ++i) {
+            string s = arr[i];
+            int len = s.length();
+
+            // Check every possible split of the string into prefix (p) and suffix (q)
+            for (int j = 0; j <= len; ++j) {
+                string p = s.substr(0, j);
+                string q = s.substr(j);
+
+                // If prefix is a palindrome, check if reversed suffix exists in map
+                if (isPalindrome(p)) {
+                    string rev_q = q;
+                    reverse(rev_q.begin(), rev_q.end());
+                    
+                    if (id.find(rev_q) != id.end() && id[rev_q] != i) {
+                        return true;
+                    }
+                }
+
+                // If suffix is a palindrome, check if reversed prefix exists in map
+                if (isPalindrome(q)) {
+                    string rev_p = p;
+                    reverse(rev_p.begin(), rev_p.end());
+                    
+                    if (id.find(rev_p) != id.end() && id[rev_p] != i) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+};
