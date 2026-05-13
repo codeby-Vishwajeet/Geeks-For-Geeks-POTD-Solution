@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  public:
+    // Function to find a Mother Vertex in the Graph.
+    int findMotherVertex(int V, vector<vector<int>>& edges) {
+        // Step 1: Build Adjacency List
+        vector<vector<int>> adj(V);
+        for (auto& edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+        }
+
+        vector<bool> visited(V, false);
+        int last_finished = 0;
+
+        // Step 2: Find a candidate using DFS
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfsCandidate(i, adj, visited, last_finished);
+            }
+        }
+
+        // Step 3: Verify if the candidate is actually a Mother Vertex
+        fill(visited.begin(), visited.end(), false);
+        int count = 0;
+        dfsVerify(last_finished, adj, visited, count);
+
+        // If candidate cannot reach all vertices, no mother vertex exists
+        if (count != V) {
+            return -1; 
+        }
+
+        // Step 4: Find the smallest mother vertex using the Reversed Graph
+        // Mother vertices are all vertices that can reach the verified mother vertex.
+        vector<vector<int>> rev_adj(V);
+        for (auto& edge : edges) {
+            rev_adj[edge[1]].push_back(edge[0]);
+        }
+
+        fill(visited.begin(), visited.end(), false);
+        int min_mother = last_finished;
+        dfsMin(last_finished, rev_adj, visited, min_mother);
+
+        return min_mother;
+    }
+
+  private:
+    // Helper to find the last finished vertex
+    void dfsCandidate(int u, vector<vector<int>>& adj, vector<bool>& visited, int& last_finished) {
+        visited[u] = true;
+        for (int v : adj[u]) {
+            if (!visited[v]) {
+                dfsCandidate(v, adj, visited, last_finished);
+            }
+        }
+        last_finished = u; // Store vertex when DFS completes
+    }
+
+    // Helper to count reachable vertices
+    void dfsVerify(int u, vector<vector<int>>& adj, vector<bool>& visited, int& count) {
+        visited[u] = true;
+        count++;
+        for (int v : adj[u]) {
+            if (!visited[v]) {
+                dfsVerify(v, adj, visited, count);
+            }
+        }
+    }
+
+    // Helper to find the minimum vertex ID in the reversed graph
+    void dfsMin(int u, vector<vector<int>>& rev_adj, vector<bool>& visited, int& min_mother) {
+        visited[u] = true;
+        min_mother = min(min_mother, u);
+        for (int v : rev_adj[u]) {
+            if (!visited[v]) {
+                dfsMin(v, rev_adj, visited, min_mother);
+            }
+        }
+    }
+};
