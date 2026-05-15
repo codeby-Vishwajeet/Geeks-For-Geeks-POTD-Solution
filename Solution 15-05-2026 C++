@@ -1,0 +1,40 @@
+class Solution {
+public:
+    long long int optimalKeys(int N) {
+        // Base Cases: If keystrokes are 6 or less, 
+        // the max 'A's is just the number of keystrokes.
+        if (N <= 6) {
+            return N;
+        }
+        
+        // dp[i] will store the maximum 'A's possible with i keystrokes
+        long long int dp[N + 1];
+        
+        // Initialization for the first 6 keystrokes
+        for (int i = 1; i <= 6; i++) {
+            dp[i] = i;
+        }
+        
+        // Calculate max 'A's for keystrokes 7 to N
+        for (int i = 7; i <= N; i++) {
+            dp[i] = 0; // Initialize to 0
+            
+            // Try all possible split points j where we press Ctrl+A, Ctrl+C
+            // We need at least 3 remaining keystrokes for A, C, V (so j <= i - 3)
+            for (int j = 1; j <= i - 3; j++) {
+                
+                // If we copy at step j, we will paste (i - j - 2) times.
+                // The multiplier is (i - j - 1).
+                long long int current_chars = dp[j] * (i - j - 1);
+                
+                // Update dp[i] with the maximum characters found
+                if (current_chars > dp[i]) {
+                    dp[i] = current_chars;
+                }
+            }
+        }
+        
+        // The last element contains our answer for N keystrokes
+        return dp[N];
+    }
+};
