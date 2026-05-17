@@ -1,0 +1,33 @@
+#include <vector>
+
+class Solution {
+  public:
+    std::vector<int> makeBeautiful(std::vector<int> arr) {
+        std::vector<int> result;
+        
+        for (int i = 0; i < arr.size(); i++) {
+            // If the result vector is empty, just push the current element
+            if (result.empty()) {
+                result.push_back(arr[i]);
+            } else {
+                int top = result.back();
+                int curr = arr[i];
+                
+                // Determine the signs (0 is considered non-negative/positive)
+                bool topIsNegative = top < 0;
+                bool currIsNegative = curr < 0;
+                
+                // If signs are different, pop the top element (they cancel out)
+                if (topIsNegative != currIsNegative) {
+                    result.pop_back();
+                } 
+                // If signs are the same, push the current element
+                else {
+                    result.push_back(curr);
+                }
+            }
+        }
+        
+        return result;
+    }
+};
