@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int maxSum(int n) {
+        // Handle edge case for 0
+        if (n == 0) return 0;
+        
+        // Create a DP array to store the maximum sum for each number up to n
+        vector<int> dp(n + 1, 0);
+        
+        for (int i = 0; i <= n; i++) {
+            // Base case: for numbers less than 12, the number itself is the max sum
+            if (i < 12) {
+                dp[i] = i;
+            } else {
+                // For larger numbers, take the max of keeping the number 
+                // OR breaking it down into 3 parts and taking their max sums.
+                dp[i] = max(i, dp[i/2] + dp[i/3] + dp[i/4]);
+            }
+        }
+        
+        // The last element contains the answer for n
+        return dp[n];
+    }
+};
