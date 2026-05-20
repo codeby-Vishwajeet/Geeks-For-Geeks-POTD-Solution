@@ -1,0 +1,35 @@
+#include <vector>
+#include <unordered_set>
+
+using namespace std;
+
+class Solution {
+  public:
+    bool isProduct(vector<int> arr, long long target) {
+        unordered_set<long long> seen;
+        
+        for (long long num : arr) {
+            if (num == 0) {
+                // If the target is 0, a single '0' is enough because 
+                // it can multiply with any other element in the array.
+                if (target == 0) {
+                    return true;
+                }
+            } else {
+                // Check if target is perfectly divisible by the current number
+                if (target % num == 0) {
+                    long long required = target / num;
+                    
+                    // If the required pair element is already in our set, we found a match
+                    if (seen.find(required) != seen.end()) {
+                        return true;
+                    }
+                }
+            }
+            // Add the current number to the set for future pair checks
+            seen.insert(num);
+        }
+        
+        return false;
+    }
+};
