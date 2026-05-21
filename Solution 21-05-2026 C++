@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int isBitSet(int n) {
+        // 0 has no set bits, return false immediately
+        if (n == 0) return 0;
+        
+        // If n has all bits set, n + 1 will be a power of 2.
+        // Applying the bitwise AND trick to check this.
+        if (((n + 1) & n) == 0) {
+            return 1;
+        }
+        
+        return 0;
+    }
+};
