@@ -1,0 +1,67 @@
+class Solution {
+  private:
+    void dfs(int row, int col, vector<vector<int>>& grid, vector<vector<int>>& vis, int n, int m) {
+        vis[row][col] = 1;
+        
+        // Directions for Up, Right, Down, Left
+        int delRow[] = {-1, 0, +1, 0};
+        int delCol[] = {0, +1, 0, -1};
+        
+        // Check all 4 adjacent directions
+        for(int i = 0; i < 4; i++) {
+            int nrow = row + delRow[i];
+            int ncol = col + delCol[i];
+            
+            // If the adjacent cell is valid, is a '1', and has not been visited yet
+            if(nrow >= 0 && nrow < n && ncol >= 0 && ncol < m 
+               && !vis[nrow][ncol] && grid[nrow][ncol] == 1) {
+                dfs(nrow, ncol, grid, vis, n, m);
+            }
+        }
+    }
+
+  public:
+    int cntOnes(vector<vector<int>> &grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        // Visited array to keep track of 1s that can reach the boundary
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        
+        // 1. Traverse First row and Last row
+        for(int j = 0; j < m; j++) {
+            // First row
+            if(!vis[0][j] && grid[0][j] == 1) {
+                dfs(0, j, grid, vis, n, m);
+            }
+            // Last row
+            if(!vis[n-1][j] && grid[n-1][j] == 1) {
+                dfs(n-1, j, grid, vis, n, m);
+            }
+        }
+        
+        // 2. Traverse First column and Last column
+        for(int i = 0; i < n; i++) {
+            // First column
+            if(!vis[i][0] && grid[i][0] == 1) {
+                dfs(i, 0, grid, vis, n, m);
+            }
+            // Last column
+            if(!vis[i][m-1] && grid[i][m-1] == 1) {
+                dfs(i, m-1, grid, vis, n, m);
+            }
+        }
+        
+        // 3. Count the remaining 1s that are NOT visited
+        int trappedCount = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 1 && !vis[i][j]) {
+                    trappedCount++;
+                }
+            }
+        }
+        
+        return trappedCount;
+    }
+};
