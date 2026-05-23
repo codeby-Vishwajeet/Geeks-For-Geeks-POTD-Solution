@@ -1,0 +1,37 @@
+/* A binary tree node
+struct Node
+{
+    int data;
+    Node* left, * right;
+}; */
+
+class Solution {
+  private:
+    int transformTree(Node* root) {
+        // Base case: null nodes contribute 0 to the sum
+        if (root == nullptr) {
+            return 0;
+        }
+        
+        // Recursively get the total sum of left and right subtrees
+        int left_sum = transformTree(root->left);
+        int right_sum = transformTree(root->right);
+        
+        // Store the original value before updating
+        int old_val = root->data;
+        
+        // Update the current node's value to the sum of subtrees
+        root->data = left_sum + right_sum;
+        
+        // Return the total sum of the subtree rooted at 'root' 
+        // (which is its original data + sum of its subtrees)
+        return old_val + root->data;
+    }
+
+  public:
+    // Convert a given tree to a tree where every node contains sum of values of
+    // nodes in left and right subtrees in the original tree
+    void toSumTree(Node *node) {
+        transformTree(node);
+    }
+};
