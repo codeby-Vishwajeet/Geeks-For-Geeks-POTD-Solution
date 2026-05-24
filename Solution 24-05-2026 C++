@@ -1,0 +1,23 @@
+#include <vector>
+using namespace std;
+
+class Solution {
+  public:
+    int coin(vector<int>& arr) {
+        int left = 0;
+        int right = arr.size() - 1;
+        
+        // Loop until only one coin remains
+        while (left < right) {
+            // Player picks the maximum of the two ends
+            if (arr[left] >= arr[right]) {
+                left++;      // Remove left coin
+            } else {
+                right--;     // Remove right coin
+            }
+        }
+        
+        // Return the value of the final remaining coin
+        return arr[left];
+    }
+};
