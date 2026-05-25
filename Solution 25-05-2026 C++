@@ -1,0 +1,37 @@
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    // Notice the exact name and parameter order expected by GfG
+    bool checkElements(int start, int end, vector<int>& arr) {
+        int range_size = end - start + 1;
+        
+        // Quick elimination: if the array has fewer elements than the required range
+        if (arr.size() < range_size) {
+            return false;
+        }
+        
+        // Track the elements we find within the target range
+        vector<bool> present(range_size, false);
+        int elements_found = 0;
+        
+        for (int num : arr) {
+            // Check if the current number falls inside our target range
+            if (num >= start && num <= end) {
+                // Map the number to a 0-based index
+                int target_index = num - start;
+                
+                // If we haven't seen this valid number before, mark and count it
+                if (!present[target_index]) {
+                    present[target_index] = true;
+                    elements_found++;
+                }
+            }
+        }
+        
+        // If we found every element in the range, the counts will match
+        return elements_found == range_size;
+    }
+};
