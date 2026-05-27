@@ -1,0 +1,22 @@
+class Solution {
+public:
+    // Updated signature: takes only string 's' and int 'x'
+    bool wifiRange(string s, int x) {
+        int n = s.length(); // Calculate 'n' directly from the string
+        int covered_till = -1;
+        
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '1') {
+                // If the left range of this router leaves a gap from the previous coverage
+                if (i - x > covered_till + 1) {
+                    return false; 
+                }
+                // Extend the coverage to the right range of this router
+                covered_till = max(covered_till, i + x);
+            }
+        }
+        
+        // Return true if the coverage reaches or exceeds the last index
+        return covered_till >= n - 1;
+    }
+};
