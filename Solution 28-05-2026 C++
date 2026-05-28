@@ -1,0 +1,50 @@
+/*
+Node is as follows:
+struct Node{
+int data;
+Node *left,*right;
+};
+*/
+
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+class Solution {
+  private:
+    void calculateVerticalSum(Node* node, int hd, map<int, int>& hdMap) {
+        // Base case: If the node is null, return
+        if (node == nullptr) {
+            return;
+        }
+        
+        // Add the current node's data to the sum for its horizontal distance
+        hdMap[hd] += node->data;
+        
+        // Traverse the left subtree with HD - 1
+        calculateVerticalSum(node->left, hd - 1, hdMap);
+        
+        // Traverse the right subtree with HD + 1
+        calculateVerticalSum(node->right, hd + 1, hdMap);
+    }
+
+  public:
+    vector <int> verticalSum(Node *root) {
+        // Map to store the vertical sum. 
+        // Key: Horizontal Distance, Value: Sum of nodes at that distance
+        map<int, int> hdMap;
+        
+        // Populate the map using a Depth First Search (Preorder)
+        calculateVerticalSum(root, 0, hdMap);
+        
+        // Extract the values from the map into the result vector
+        vector<int> result;
+        for (auto it : hdMap) {
+            result.push_back(it.second);
+        }
+        
+        return result;
+    }
+};
