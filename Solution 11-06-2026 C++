@@ -1,0 +1,17 @@
+#include <string>
+
+class Solution {
+  public:
+    int findIndex(std::string str) {
+        int close_count = 0;
+        
+        // Simply count the total number of closing brackets
+        for (char c : str) {
+            if (c == ')') {
+                close_count++;
+            }
+        }
+        
+        return close_count;
+    }
+};
