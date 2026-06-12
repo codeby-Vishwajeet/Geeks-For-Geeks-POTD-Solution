@@ -1,0 +1,40 @@
+class Solution {
+public:
+    int kSubstr(string s, int k) {
+        int n = s.length();
+        
+        // If string length is not a multiple of k, it cannot be divided perfectly
+        if (n % k != 0) {
+            return 0;
+        }
+        
+        unordered_map<string, int> freqMap;
+        
+        // Traverse string in chunks of size k
+        for (int i = 0; i < n; i += k) {
+            string sub = s.substr(i, k);
+            freqMap[sub]++;
+            
+            // Optimization: If we find more than 2 unique substrings, 
+            // 1 replacement will never be enough to fix it.
+            if (freqMap.size() > 2) {
+                return 0;
+            }
+        }
+        
+        // If there's only 1 unique substring, it's already perfect
+        if (freqMap.size() == 1) {
+            return 1;
+        }
+        
+        // If there are exactly 2 unique substrings, one of them MUST appear exactly once
+        for (auto& pair : freqMap) {
+            if (pair.second == 1) {
+                return 1;
+            }
+        }
+        
+        // If we have 2 unique substrings but both appear more than once (e.g., abcdabcd)
+        return 0;
+    }
+};
