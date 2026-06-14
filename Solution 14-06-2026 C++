@@ -1,0 +1,41 @@
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> exitPoint(vector<vector<int>>& matrix) {
+        // Derive dimensions directly from the matrix
+        int n = matrix.size();
+        int m = matrix[0].size();
+        
+        int r = 0, c = 0;
+        
+        // Directions: Right, Down, Left, Up
+        int dr[] = {0, 1, 0, -1};
+        int dc[] = {1, 0, -1, 0};
+        int dir = 0; // Starts facing Right
+        
+        while (true) {
+            // If we hit a 1, change it to 0 and turn 90 degrees right
+            if (matrix[r][c] == 1) {
+                matrix[r][c] = 0;
+                dir = (dir + 1) % 4; 
+            }
+            
+            // Calculate next position
+            int nextR = r + dr[dir];
+            int nextC = c + dc[dir];
+            
+            // If next position is out of bounds, we exit from the current cell
+            if (nextR < 0 || nextR >= n || nextC < 0 || nextC >= m) {
+                return {r, c};
+            }
+            
+            // Move to the next cell
+            r = nextR;
+            c = nextC;
+        }
+        
+        return {r, c};
+    }
+};
