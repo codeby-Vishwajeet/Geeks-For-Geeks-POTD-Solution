@@ -1,0 +1,42 @@
+class Solution {
+    largestArea(n, m, k, arr) {
+        // Handle GFG driver code mismatch: if 4th arg is undefined, the 3rd arg is the matrix
+        let matrix = (arr === undefined) ? k : arr;
+
+        // Initialize with grid boundaries (0 and n+1 / m+1)
+        let blockedRows = [0, n + 1];
+        let blockedCols = [0, m + 1];
+        
+        // Extract the blocked rows and columns from the given array
+        for (let i = 0; i < matrix.length; i++) {
+            blockedRows.push(matrix[i][0]);
+            blockedCols.push(matrix[i][1]);
+        }
+        
+        // Sort the blocked rows and columns in ascending order
+        blockedRows.sort((a, b) => a - b);
+        blockedCols.sort((a, b) => a - b);
+        
+        let maxConsecutiveRows = 0;
+        let maxConsecutiveCols = 0;
+        
+        // Find the maximum gap between consecutive blocked rows
+        for (let i = 1; i < blockedRows.length; i++) {
+            let currentGap = blockedRows[i] - blockedRows[i - 1] - 1;
+            if (currentGap > maxConsecutiveRows) {
+                maxConsecutiveRows = currentGap;
+            }
+        }
+        
+        // Find the maximum gap between consecutive blocked columns
+        for (let i = 1; i < blockedCols.length; i++) {
+            let currentGap = blockedCols[i] - blockedCols[i - 1] - 1;
+            if (currentGap > maxConsecutiveCols) {
+                maxConsecutiveCols = currentGap;
+            }
+        }
+        
+        // The largest unblocked area is the product of both max gaps
+        return maxConsecutiveRows * maxConsecutiveCols;
+    }
+}
