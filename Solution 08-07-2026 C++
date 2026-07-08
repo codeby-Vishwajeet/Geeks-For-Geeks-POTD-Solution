@@ -1,0 +1,84 @@
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    // Renamed to match the GFG driver code expectations
+    int countCoordinates(vector<vector<int>>& mat) {
+        if (mat.empty() || mat[0].empty()) return 0;
+        
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        // Track towers that can reach Station P and Station Q
+        vector<vector<bool>> reachP(n, vector<bool>(m, false));
+        vector<vector<bool>> reachQ(n, vector<bool>(m, false));
+        
+        queue<pair<int, int>> qP;
+        queue<pair<int, int>> qQ;
+        
+        // Initialize queues with boundary towers
+        // Station P: Top and Left boundaries
+        for (int i = 0; i < n; ++i) {
+            reachP[i][0] = true;
+            qP.push({i, 0});
+        }
+        for (int j = 0; j < m; ++j) {
+            reachP[0][j] = true;
+            qP.push({0, j});
+        }
+        
+        // Station Q: Bottom and Right boundaries
+        for (int i = 0; i < n; ++i) {
+            reachQ[i][m - 1] = true;
+            qQ.push({i, m - 1});
+        }
+        for (int j = 0; j < m; ++j) {
+            reachQ[n - 1][j] = true;
+            qQ.push({n - 1, j});
+        }
+        
+        // Direction vectors for moving North, South, East, West
+        int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        // Lambda function for BFS traversal
+        auto bfs = [&](queue<pair<int, int>>& q, vector<vector<bool>>& reach) {
+            while (!q.empty()) {
+                auto [x, y] = q.front();
+                q.pop();
+                
+                for (int i = 0; i < 4; ++i) {
+                    int nx = x + dirs[i][0];
+                    int ny = y + dirs[i][1];
+                    
+                    // Boundary checks and visited check
+                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && !reach[nx][ny]) {
+                        // Reverse condition: next tower must be >= current tower
+                        if (mat[nx][ny] >= mat[x][y]) {
+                            reach[nx][ny] = true;
+                            q.push({nx, ny});
+                        }
+                    }
+                }
+            }
+        };
+        
+        // Run BFS backwards from both stations
+        bfs(qP, reachP);
+        bfs(qQ, reachQ);
+        
+        // Count towers that can reach both P and Q
+        int count = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (reachP[i][j] && reachQ[i][j]) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};
